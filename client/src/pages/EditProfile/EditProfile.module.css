@@ -1,0 +1,11 @@
+.editProfileContainer {
+  width: 70%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.errorlabel {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
