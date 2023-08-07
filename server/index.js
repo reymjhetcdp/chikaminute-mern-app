@@ -15,6 +15,7 @@ import { configSocket } from "./src/socket/socket.js";
 dotenv.config();
 const PORT = process.env.PORT;
 const CONNECTION = process.env.MONGODB_CONNECTION;
+const SOCKET_CONNECTION = process.env.SOCKET_CONNECTION;
 const app = express();
 
 app.use(cors());
@@ -33,7 +34,9 @@ mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     app.listen(PORT, () => console.log(`Listening at Port ${PORT}`));
-    server.listen(3001, () => console.log("Socket server running 3001"));
+    server.listen(SOCKET_CONNECTION, () =>
+      console.log(`Socket server running ${SOCKET_CONNECTION}`)
+    );
   })
   .catch((error) => console.log(`${error} did not connect`));
 
