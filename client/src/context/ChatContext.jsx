@@ -9,7 +9,7 @@ export function useChatContext() {
 }
 
 export function ChatProvider({ children }) {
-  const user = useUserContext();
+  const user = useUserContext()
   const [chats, setChats] = useState([]);
   const [chatId, setChatId] = useState("");
   const [receivedMessage, setReceivedMessage] = useState({});
@@ -27,13 +27,13 @@ export function ChatProvider({ children }) {
   }
 
   useEffect(() => {
-    socket.current = io.connect(import.meta.env.VITE_REACT_SOCKET_CONNECTION);
+    socket.current = io.connect(import.meta.env.VITE_REACT_SOCKET_URL);
   }, []);
 
   useEffect(() => {
     if (user?._id) {
       socket.current.emit("new-user-add", user._id);
-
+      
       socket.current.on("get-users", (users) => {
         setOnlineUsers(users);
       });
@@ -41,15 +41,15 @@ export function ChatProvider({ children }) {
       socket.current.on("receive_message", (data) => {
         setReceivedMessage(data);
       });
-
+      
       socket.current.on("update_chat", (data) => {
-        setChats((prev) => {
-          const toChange = prev.map((chat) => {
-            if (chat._id !== data._id) return chat;
-            return data;
-          });
-          return sortByUpdatedAt(toChange);
-        });
+        setChats(prev => {
+          const toChange = prev.map(chat => {
+            if (chat._id !== data._id) return chat
+            return data
+          })
+          return sortByUpdatedAt(toChange)
+        })
       });
     }
   }, [user]);
@@ -66,7 +66,7 @@ export function ChatProvider({ children }) {
     socket,
     setChats,
     setMembers,
-    members,
+    members
   };
 
   return <ChatContext.Provider value={values}>{children}</ChatContext.Provider>;
