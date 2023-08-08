@@ -24,6 +24,7 @@ function Chatmate({ data, currentUserId, findChat }) {
     const getUserData = async () => {
       try {
         const response = await getUser(userId);
+        console.log(response);
         setUserData(response);
         // setChatmateInfo(data);
       } catch (error) {
