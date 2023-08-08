@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import http from "http";
+import { Server } from "socket.io";
 
 // routes
 import AuthRoute from "./src/routes/AuthRoute.js";
@@ -15,14 +16,11 @@ import { configSocket } from "./src/socket/socket.js";
 dotenv.config();
 const PORT = process.env.PORT;
 const CONNECTION = process.env.MONGODB_CONNECTION;
-const SOCKET_CONNECTION = process.env.SOCKET_CONNECTION;
 const app = express();
 
 app.use(cors());
 
 global.activeUsers = [];
-const server = http.createServer(app);
-const io = configSocket(server);
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -33,15 +31,19 @@ app.use("/images", express.static("images"));
 mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    app.listen(PORT, () => console.log(`Listening at Port ${PORT}`));
-    server.listen(SOCKET_CONNECTION, () =>
-      console.log(`Socket server running ${SOCKET_CONNECTION}`)
-    );
+    const server = http.createServer(app);
+    const io = configSocket(server);
+
+    // Configure socket.io
+    io.on("connection", (socket) => {
+      console.log(`Socket connected: ${socket.id}`);
+      // You can add your socket event listeners and logic here
+    });
   })
   .catch((error) => console.log(`${error} did not connect`));
 
 app.use((req, res, next) => {
-  res.locals.io = io;
+  res.locals.io = io; // Make io available to routes
   next();
 });
 
